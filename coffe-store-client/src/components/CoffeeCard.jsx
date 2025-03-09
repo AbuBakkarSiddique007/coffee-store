@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import Swal from "sweetalert2";
 
 const CoffeeCard = ({ coffee }) => {
@@ -20,7 +21,7 @@ const CoffeeCard = ({ coffee }) => {
             if (result.isConfirmed) {
 
 
-                fetch(`http://localhost:5000/coffee/${_id}`,{
+                fetch(`http://localhost:5000/coffee/${_id}`, {
                     method: "DELETE"
                 })
                     .then(res => res.json())
@@ -76,9 +77,13 @@ const CoffeeCard = ({ coffee }) => {
                 <button className="px-4 py-1 bg-blue-500 text-white rounded hover:bg-blue-600 transition">
                     View
                 </button>
-                <button className="px-4 py-1 bg-yellow-500 text-white rounded hover:bg-yellow-600 transition">
-                    Edit
-                </button>
+                
+                <Link to={`updateCoffee/${_id}`}>
+                    <button className="px-4 py-1 bg-yellow-500 text-white rounded hover:bg-yellow-600 transition">
+                        Edit
+                    </button>
+                </Link>
+
                 <button onClick={() => handleDelete(_id)} className="px-4 py-1 bg-red-500 text-white rounded hover:bg-red-600 transition">
                     Delete
                 </button>
