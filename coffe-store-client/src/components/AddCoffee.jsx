@@ -3,28 +3,39 @@ import Swal from 'sweetalert2'
 const AddCoffee = () => {
 
     const handleAddNewCoffee = event => {
-        event.preventDefault()
+        event.preventDefault();
 
-        const form = event.target
+        const form = event.target;
 
+        // Collect form data
         const name = form.name.value
         const chef = form.chef.value
         const category = form.category.value
         const taste = form.taste.value
         const detail = form.detail.value
+        const supplier = form.supplier.value
         const photo = form.photo.value
 
-        const newCoffee = { name, chef, category, taste, detail, photo }
+        if (!name || !chef || !category || !taste || !detail || !supplier || !photo) {
+            Swal.fire({
+                title: 'Error',
+                text: 'All fields are required!',
+                icon: 'error',
+                confirmButtonText: 'OK',
+            });
+            return;
+        }
+
+        const newCoffee = { name, chef, category, taste, detail, supplier, photo };
         console.log(newCoffee);
 
-        // 1. Send data client to server
-        //Post request
+        // Send data to server
         fetch('http://localhost:5000/coffee', {
             method: 'POST',
             headers: {
-                'content-type': 'application/json'
+                'Content-Type': 'application/json',
             },
-            body: JSON.stringify(newCoffee)
+            body: JSON.stringify(newCoffee),
         })
             .then(res => res.json())
             .then(data => {
@@ -33,17 +44,27 @@ const AddCoffee = () => {
                 if (data.insertedId) {
                     Swal.fire({
                         title: 'Success',
-                        text: 'User Added Successfully!',
+                        text: 'Coffee added successfully!',
                         icon: 'success',
-                        confirmButtonText: 'Cool'
-                    })
+                        confirmButtonText: 'Cool',
+                    });
+                    form.reset(); 
                 }
-
             })
-    }
+            .catch(error => {
+                console.error('Error:', error);
+                Swal.fire({
+                    title: 'Error',
+                    text: 'Failed to add coffee. Please try again!',
+                    icon: 'error',
+                    confirmButtonText: 'OK',
+                });
+            });
+    };
+
 
     return (
-        <div className="max-w-11/12 mx-auto border-2 border-red-500">
+        <div className="mx-auto border-2 border-red-500">
             <div className="bg-[#F4F3F0]">
                 <h1 className="text-center font-bold text-3xl mb-4 text-gray-800">
                     Add New Coffee
