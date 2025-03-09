@@ -1,7 +1,45 @@
 import React from "react";
+import Swal from "sweetalert2";
 
 const CoffeeCard = ({ coffee }) => {
-    const { name, chef, category, taste, detail, supplier, photo } = coffee;
+    const { _id, name, chef, category, taste, detail, supplier, photo } = coffee;
+
+    const handleDelete = _id => {
+        console.log(_id);
+
+
+        Swal.fire({
+            title: "Are you sure?",
+            text: "You won't be able to revert this!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Yes, delete it!"
+        }).then((result) => {
+            if (result.isConfirmed) {
+
+
+                fetch(`http://localhost:5000/coffee/${_id}`,{
+                    method: "DELETE"
+                })
+                    .then(res => res.json())
+                    .then(data => {
+                        console.log(data);
+
+                        if (data.deletedCount > 0) {
+                            Swal.fire({
+                                title: "Deleted!",
+                                text: "Your Coffee has been deleted.",
+                                icon: "success"
+                            });
+                        }
+                    })
+
+            }
+        });
+
+    }
 
     return (
         <div className="flex items-center justify-between bg-white border border-gray-200 rounded-lg shadow-md p-4 w-full max-w-lg transition-transform transform hover:scale-105 hover:shadow-lg">
@@ -41,7 +79,7 @@ const CoffeeCard = ({ coffee }) => {
                 <button className="px-4 py-1 bg-yellow-500 text-white rounded hover:bg-yellow-600 transition">
                     Edit
                 </button>
-                <button className="px-4 py-1 bg-red-500 text-white rounded hover:bg-red-600 transition">
+                <button onClick={() => handleDelete(_id)} className="px-4 py-1 bg-red-500 text-white rounded hover:bg-red-600 transition">
                     Delete
                 </button>
             </div>
